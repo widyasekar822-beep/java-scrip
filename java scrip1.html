@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <title>tugas 4 - java script</title>
+      
+    <style>
+
+         body {
+            font-family: Arial, sans-serif;
+            background-color: #eaf5ef;
+            padding: 30px;
+        }
+
+        table{
+             background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+
+        img{
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+         #kotak {
+            background-color: white;
+            border: 1px solid #b5d8c4;
+            border-radius: 10px;
+            padding: 20px;
+            width: 400px;
+        }
+
+        h2{
+             color: #39815b;
+            text-align: center;
+        }
+
+        input {
+            padding: 7px;
+            border: 1px solid #b5cfc0;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+
+        button{
+             background-color: #70b58c;
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+         button:hover {
+            background-color: #43865f;
+        }
+
+        #hasil {
+            background-color: white;
+            padding: 15px;
+            width: 410px;
+            border-radius: 10px;
+            color: #39815b;
+            line-height: 1.6;
+        }
+
+        
+        .baris-pilihan {
+            display: block;
+        }
+
+        .baris-pilihan span {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        #daftarPilihan label {
+            display: block;
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+
+        #daftarPilihan input {
+            margin: 0 6px 0 0;
+            vertical-align: middle;
+        }
+
+        
+        .terpilih {
+            background-color: #d4ecdf;
+            color: #39815b;
+            font-weight: bold;
+        }
+
+        .redup {
+            opacity: 0.4;
+        }
+
+        select.terpilih {
+            padding: 5px;
+        }
+
+    </style>
+    </HEAD>
+    <body>
+        <table>
+            <tr>
+                <td>
+                    <img src="https://i.pinimg.com/1200x/e7/0b/61/e70b61254eb923ea43959e6d6c2f3b25.jpg"
+                 width="80" height="80" alt="Foto">
+                </td>
+                <td>
+                    Nama:Widya Sekar <br>
+                    Nim:255314062
+                </td>
+            </tr>
+        </table>
+
+        <hr>
+        <h2>Form Pilihan</h2>
+
+<div id="kotak">
+
+    <div id="bagian1">
+        Nama : <input type="text" id="nama"><br><br>
+
+        Jumlah Pilihan :
+        <input type="number" id="jumlah" min="1" max="10" value="1">
+
+        <button id="ok1">OK</button>
+    </div>
+
+    <div id="bagian2"></div>
+    <div id="bagian3"></div>
+    <div id="bagian4"></div>
+
+</div>
+
+<p id="hasil"></p>
+
+<script>
+
+
+var bentuk = "radio";
+
+var nama = "";
+var jumlah = 0;
+var pilihan = [];
+var terpilih = "";
+var email = "";
+
+
+function buat(tag, isi) {
+    var e = document.createElement(tag);
+    if (isi) e.textContent = isi;
+    return e;
+}
+
+
+function ok1() {
+    nama = document.getElementById("nama").value.trim();
+    jumlah = Number(document.getElementById("jumlah").value);
+
+    if (nama == "") {
+        alert("Nama harus diisi!");
+        return;
+    }
+
+    // Validasi nama: hanya huruf, spasi, titik, apostrof, dan strip
+    var polaNama = /^[A-Za-z\s.'-]+$/;
+    if (!polaNama.test(nama)) {
+        alert("Nama hanya boleh berisi huruf! Angka dan simbol tidak diperbolehkan.");
+        document.getElementById("nama").value = "";
+        document.getElementById("nama").focus();
+        return;
+    }
+
+    if (!Number.isInteger(jumlah) || jumlah < 1 || jumlah > 10) {
+        alert("Jumlah pilihan harus 1 - 10!");
+        return;
+    }
+
+
+    document.getElementById("bagian1").style.display = "none";
+
+    document.getElementById("bagian3").innerHTML = "";
+    document.getElementById("bagian4").innerHTML = "";
+
+    var b2 = document.getElementById("bagian2");
+    b2.style.display = "block";
+    b2.innerHTML = "";
+
+    
+    for (var i = 1; i <= jumlah; i++) {
+        b2.appendChild(document.createTextNode("Pilihan " + i + " : "));
+
+        var inp = buat("input");
+        inp.type = "text";
+        inp.id = "teks" + i;
+
+        b2.appendChild(inp);
+        b2.appendChild(buat("br"));
+    }
+
+    var tombol = buat("button", "OK");
+    tombol.onclick = ok2;
+    b2.appendChild(tombol);
+}
+
+
+function ok2() {
+    pilihan = [];
+
+    for (var i = 1; i <= jumlah; i++) {
+        var teks = document.getElementById("teks" + i).value.trim();
+
+        if (teks == "") {
+            alert("Pilihan " + i + " harus diisi!");
+            return;
+        }
+
+        pilihan.push(teks);
+    }
+
+    document.getElementById("bagian2").style.display = "none";
+
+    document.getElementById("bagian4").innerHTML = "";
+
+    var b3 = document.getElementById("bagian3");
+    b3.style.display = "block";
+    b3.innerHTML = "";
+
+    var baris = buat("div");
+    baris.className = "baris-pilihan";
+    baris.appendChild(buat("span", "Pilihan : "));
+
+    if (bentuk == "radio") {
+        var daftar = buat("div");
+        daftar.id = "daftarPilihan";
+
+        for (var i = 0; i < pilihan.length; i++) {
+            var lbl = buat("label");
+
+            var r = buat("input");
+            r.type = "radio";
+            r.name = "pil";
+            r.value = pilihan[i];
+
+            if (i == 0) {
+                r.checked = true;
+            }
+
+
+            r.onchange = function () {
+                var semua = document.querySelectorAll("#daftarPilihan label");
+                for (var k = 0; k < semua.length; k++) {
+                    semua[k].className = "";
+                }
+            };
+
+            lbl.appendChild(r);
+            lbl.appendChild(document.createTextNode(pilihan[i]));
+            daftar.appendChild(lbl);
+        }
+
+        baris.appendChild(daftar);
+    } else {
+        var s = buat("select");
+        s.id = "dd";
+
+        for (var j = 0; j < pilihan.length; j++) {
+            var o = buat("option", pilihan[j]);
+            o.value = pilihan[j];
+            s.appendChild(o);
+        }
+
+        s.onchange = function () {
+            this.className = "";
+        };
+
+        baris.appendChild(s);
+    }
+
+    b3.appendChild(baris);
+    b3.appendChild(buat("br"));
+
+    var tombol = buat("button", "OK");
+    tombol.onclick = ok3;
+    b3.appendChild(tombol);
+}
+
+
+function ok3() {
+    if (bentuk == "radio") {
+        terpilih = document.querySelector(
+            'input[name="pil"]:checked'
+        ).value;
+
+        
+        var semua = document.querySelectorAll("#daftarPilihan label");
+        for (var k = 0; k < semua.length; k++) {
+            var radio = semua[k].querySelector("input");
+            semua[k].className = radio.checked ? "terpilih" : "redup";
+        }
+    } else {
+        terpilih = document.getElementById("dd").value;
+        document.getElementById("dd").className = "terpilih";
+    }
+
+    
+    setTimeout(function () {
+        document.getElementById("bagian3").style.display = "none";
+
+        var b4 = document.getElementById("bagian4");
+        b4.innerHTML = "";
+        b4.appendChild(document.createTextNode("Email : "));
+
+        var inp = buat("input");
+        inp.type = "text";
+        inp.id = "email";
+
+        b4.appendChild(inp);
+
+        var tombol = buat("button", "OK");
+        tombol.onclick = ok4;
+        b4.appendChild(tombol);
+    }, 700);
+}
+
+
+function ok4() {
+    var kolom = document.getElementById("email");
+    var pola = /^[A-Za-z0-9._-]+@[A-Za-z0-9-]+(\.[A-Za-z]{2,})+$/;
+
+    if (!pola.test(kolom.value.trim())) {
+        alert("Format email salah! Contoh: nama@domain.com");
+        kolom.value = "";
+        kolom.focus();
+        return;
+    }
+
+    email = kolom.value.trim();
+
+    document.getElementById("kotak").style.display = "none";
+
+    document.getElementById("hasil").textContent =
+        "Halo, nama saya " + nama +
+        ", email " + email +
+        ". Saya mempunyai sejumlah " + jumlah +
+        " pilihan yaitu " + pilihan.join(", ") +
+        ", dan saya memilih " + terpilih;
+}
+
+
+document.getElementById("ok1").onclick = ok1;
+
+</script>
+
+    </body>
+</HTML>
